@@ -1,7 +1,10 @@
 package main
 
 import (
+	"backend/models"
+	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -87,6 +90,17 @@ func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) editmovie(w http.ResponseWriter, r *http.Request) {
+	var movie models.Movie
+
+	err := json.NewDecoder(r.Body).Decode(&movie)
+	if err != nil {
+		log.Println(err)
+		app.errorJSON(w, err)
+		return
+	}
+
+	log.Println(movie.Title)
+
 	type jsonResp struct {
 		OK bool `json:"ok"`
 	}
@@ -95,7 +109,7 @@ func (app *application) editmovie(w http.ResponseWriter, r *http.Request) {
 		OK: true,
 	}
 
-	err := app.writeJSON(w, http.StatusOK, ok, "response")
+	err = app.writeJSON(w, http.StatusOK, ok, "response")
 	if err != nil {
 		app.errorJSON(w, err)
 		return
