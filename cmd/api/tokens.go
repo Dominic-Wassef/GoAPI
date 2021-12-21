@@ -4,8 +4,11 @@ import (
 	"backend/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/pascaldekloe/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,19 +34,25 @@ func (app *application) Signin(w http.ResponseWriter, r *http.Request) {
 
 	hashedPassword := validUser.Password
 
-	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), [byte(creds.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(creds.Password))
 	if err != nil {
-		app.errorJSON(w, errors.new("unauthorized"))
+		app.errorJSON(w, errors.New("unauthorized"))
 		return
 	}
+
 	var claims jwt.Claims
 	claims.Subject = fmt.Sprint(validUser.ID)
 	claims.Issued = jwt.NewNumericTime(time.Now())
-	claims.NotBeofre = jwt.NewNumericTime(time.Now())
+	claims.NotBefore = jwt.NewNumericTime(time.Now())
 	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
 	claims.Issuer = "mydomain.com"
 	claims.Audiences = []string{"mydomain.com"}
 
 	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(app.config.jwt.secret))
+	if err != nil {
+		app.errorJSON(w, errors.New("error signing"))
+		return
+	}
 
+	app.writeJSON(w, http.StatusOK, jwtBytes, "response")
 }
