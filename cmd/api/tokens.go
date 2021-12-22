@@ -15,7 +15,7 @@ import (
 var validUser = models.User{
 	ID:       10,
 	Email:    "me@here.com",
-	Password: "$2a$12$3LHKNK/t.Zu409uUl3ItGevIXsoCZaMxoagFpJHfubhv/jvHN8AEK",
+	Password: "$2a$12$YZmO3zxVXaKGXORRDxMleOD8COPtz85eSfuxB3ulSwfZmQ6uNzmE2",
 }
 
 type Credentials struct {
@@ -54,5 +54,5 @@ func (app *application) Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.writeJSON(w, http.StatusOK, string(jwtBytes), "response")
+	app.writeJSON(w, http.StatusOK, string(jwtBytes), "reponse")
 }
