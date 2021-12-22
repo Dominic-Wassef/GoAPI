@@ -87,10 +87,6 @@ func (app *application) getAllMoviesByGenre(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (app *application) moviesByGenre(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
@@ -132,7 +128,7 @@ type MoviePayload struct {
 	MPAARating  string `json:"mpaa_rating"`
 }
 
-func (app *application) editmovie(w http.ResponseWriter, r *http.Request) {
+func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 	var payload MoviePayload
 
 	err := json.NewDecoder(r.Body).Decode(&payload)
